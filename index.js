@@ -2,9 +2,10 @@ const express = require('express');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
 const winston = require('winston');
-const PORT = process.env.APP_PORT || 8081;
+const PORT = process.env.APP_PORT || 3090;
 const swaggerUi = require('swagger-ui-express');
-const swaggerSpec = require('./swagger');
+const swaggerSpec = require('./swagger.json');
+const path = require('path');
 
 const router = express.Router();
 const authUserRouter = require('./routes/authUserRoutes');
@@ -29,19 +30,23 @@ app.use((req, res, next) => {
     next();
 });
 app.use(express.urlencoded({ extended: true }));
-
+app.use('/upload', express.static(path.join(__dirname, './upload')));
 app.use(express.json()); // untuk menangkap data json
 app.use(morgan('dev'));
 app.use(movieRouter);
 app.use(userRouter);
 app.use(authUserRouter);
-app.use('/api/pagination', paginationRouter);
+app.use(paginationRouter);
 
 // Healthcheck endpoint
 app.use('/', router);
 app.get('/ping', (request, response) => {
     response.json({ message: 'Ping Successfully' });
 });
+
+app.get('/movies', (req, res) => {
+    movieRouter.get(mov)
+})
 
 app.listen(PORT, () => {
     console.info(`Application running at localhost: ${PORT}`);
