@@ -1,117 +1,25 @@
 const express = require('express');
 const router = express.Router();
-const usersController = require('../controllers/usersController');
+const UserService = require('../services/userService'); // Gantilah dengan path yang sesuai dengan struktur folder Anda
+const UserController = require('../controllers/usersController'); // Gantilah dengan path yang sesuai dengan struktur folder Anda
+const verifyToken = require('../middleware/authJWT');
 
-router.get('/api/users', usersController.getAllUsers);
-router.get('/api/users/:id', usersController.getUserById);
-router.post('/api/users', usersController.createNewUser);
-router.put('/api/users/:id', usersController.updateUserById);
-router.delete('/api/users/:id', usersController.deleteUserById);
+const userService = new UserService();
+const userController = new UserController(userService);
+
+// Rute untuk mendapatkan semua pengguna
+router.get('/api/users', verifyToken, userController.getAllUsers);
+
+// Rute untuk mendapatkan pengguna berdasarkan ID
+router.get('/api/users/:id', verifyToken, userController.getUserById);
+
+// Rute untuk membuat pengguna baru
+router.post('/api/users', verifyToken, userController.createNewUser);
+
+// Rute untuk mengupdate pengguna berdasarkan ID
+router.put('/api/users/:id', verifyToken, userController.updateUserById);
+
+// Rute untuk menghapus pengguna berdasarkan ID
+router.delete('/api/users/:id', verifyToken, userController.deleteUserById);
+
 module.exports = router;
-
-// /**
-//  * @swagger
-//  * /api/users:
-//  *   get:
-//  *     summary: Mendapatkan daftar pengguna
-//  *     description: Mengambil daftar semua pengguna yang terdaftar.
-//  *     responses:
-//  *       '200':
-//  *         description: Daftar pengguna berhasil diambil
-//  *       '500':
-//  *         description: Kesalahan server
-//  */
-
-// /**
-//  * @swagger
-//  * /api/users/{id}:
-//  *   get:
-//  *     summary: Mendapatkan pengguna berdasarkan ID
-//  *     description: Mengambil detail pengguna berdasarkan ID yang diberikan.
-//  *     parameters:
-//  *       - name: id
-//  *         in: path
-//  *         description: ID pengguna yang akan diambil
-//  *         required: true
-//  *         type: integer
-//  *     responses:
-//  *       '200':
-//  *         description: Detail pengguna berhasil diambil
-//  *       '404':
-//  *         description: Pengguna tidak ditemukan
-//  *       '500':
-//  *         description: Kesalahan server
-//  */
-
-// /**
-//  * @swagger
-//  * /api/users:
-//  *   post:
-//  *     summary: Membuat pengguna baru
-//  *     description: Membuat pengguna baru dengan informasi yang diberikan.
-//  *     requestBody:
-//  *       description: Data pengguna baru
-//  *       required: true
-//  *       content:
-//  *         application/json:
-//  *           schema:
-//  *             $ref: './schema/schemaUsers.json#/components/schemas/User'
-//  *     responses:
-//  *       '201':
-//  *         description: Pengguna baru berhasil dibuat
-//  *       '400':
-//  *         description: Permintaan tidak valid
-//  *       '500':
-//  *         description: Kesalahan server
-//  */
-
-// /**
-//  * @swagger
-//  * /api/users/{id}:
-//  *   put:
-//  *     summary: Mengupdate pengguna berdasarkan ID
-//  *     description: Mengupdate detail pengguna berdasarkan ID yang diberikan.
-//  *     parameters:
-//  *       - name: id
-//  *         in: path
-//  *         description: ID pengguna yang akan diupdate
-//  *         required: true
-//  *         type: integer
-//  *     requestBody:
-//  *       description: Data pengguna yang akan diupdate
-//  *       required: true
-//  *       content:
-//  *         application/json:
-//  *           schema:
-//  *             $ref: './schema/schemaUsers.json#/components/schemas/User'
-//  *     responses:
-//  *       '200':
-//  *         description: Pengguna berhasil diupdate
-//  *       '404':
-//  *         description: Pengguna tidak ditemukan
-//  *       '400':
-//  *         description: Permintaan tidak valid
-//  *       '500':
-//  *         description: Kesalahan server
-//  */
-
-// /**
-//  * @swagger
-//  * /api/users/{id}:
-//  *   delete:
-//  *     summary: Menghapus pengguna berdasarkan ID
-//  *     description: Menghapus pengguna berdasarkan ID yang diberikan.
-//  *     parameters:
-//  *       - name: id
-//  *         in: path
-//  *         description: ID pengguna yang akan dihapus
-//  *         required: true
-//  *         type: integer
-//  *     responses:
-//  *       '204':
-//  *         description: Pengguna berhasil dihapus
-//  *       '404':
-//  *         description: Pengguna tidak ditemukan
-//  *       '500':
-//  *         description: Kesalahan server
-//  */
